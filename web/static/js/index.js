@@ -1,82 +1,9 @@
-var data, layout, ml;
+var data, ml;
 data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(function(){
   return Math.round(Math.random() * 100);
 });
-layout = function(opt){
-  opt == null && (opt = {});
-  this.root = typeof opt.root === 'string'
-    ? document.querySelector(opt.root)
-    : opt.root;
-  this.evtHandler = {};
-  this.box = {};
-  this.node = {};
-  this.group = {};
-  return this;
-};
-layout.prototype = import$(Object.create(Object.prototype), {
-  on: function(n, cb){
-    var ref$;
-    return ((ref$ = this.evtHandler)[n] || (ref$[n] = [])).push(cb);
-  },
-  fire: function(n){
-    var v, res$, i$, to$, ref$, len$, cb, results$ = [];
-    res$ = [];
-    for (i$ = 1, to$ = arguments.length; i$ < to$; ++i$) {
-      res$.push(arguments[i$]);
-    }
-    v = res$;
-    for (i$ = 0, len$ = (ref$ = this.evtHandler[n] || []).length; i$ < len$; ++i$) {
-      cb = ref$[i$];
-      results$.push(cb.apply(this, v));
-    }
-    return results$;
-  },
-  init: function(cb){
-    var this$ = this;
-    return Promise.resolve().then(function(){
-      window.addEventListener('resize', function(){
-        return this$.update();
-      });
-      cb.apply(this$);
-      return this$.update();
-    });
-  },
-  update: function(){
-    var this$ = this;
-    this.rbox = this.root.getBoundingClientRect();
-    Array.from(this.root.querySelectorAll('.chart-layout .cell[name]')).map(function(node, i){
-      var name, ref$, box, g;
-      name = node.getAttribute('name');
-      this$.node[name] = node;
-      this$.box[name] = box = {
-        x: (ref$ = node.getBoundingClientRect()).x,
-        y: ref$.y,
-        width: ref$.width,
-        height: ref$.height
-      };
-      box.x -= this$.rbox.x;
-      box.y -= this$.rbox.y;
-      this$.group[name] = g = this$.root.querySelector("g." + name);
-      g.setAttribute('transform', "translate(" + box.x + "," + box.y + ")");
-      return g.layout = {
-        node: node,
-        box: box
-      };
-    });
-    return this.fire('render');
-  },
-  getBox: function(it){
-    return this.box[it];
-  },
-  getNode: function(it){
-    return this.node[it];
-  },
-  getGroup: function(it){
-    return this.group[it];
-  }
-});
 ml = new layout({
-  root: '.chart'
+  root: '.chart-layout'
 });
 ml.on('render', function(){
   var box, ref$;
@@ -120,8 +47,3 @@ ml.init(function(){
     }
   });
 });
-function import$(obj, src){
-  var own = {}.hasOwnProperty;
-  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
-  return obj;
-}
