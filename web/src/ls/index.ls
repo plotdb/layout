@@ -1,6 +1,6 @@
 data = [0 to 20].map -> Math.round(Math.random! * 100)
 
-ml = new layout root: '.chart-layout'
+ml = new layout root: '.pd-layout'
 ml.on \render, ->
   box = @get-box('view')
   @{}lc.{}scale.y = d3.scaleLinear!

@@ -5,7 +5,7 @@ html
     +css("/assets/lib/bootstrap/main/css/bootstrap.min.css")
     +css("/assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.css")
     +css("/assets/lib/@loadingio/transition.css/main/transition.min.css")
-    +css("/assets/lib/chart-layout/dev/index.min.css")
+    +css("/assets/lib/@plotdb/layout/dev/index.min.css")
     +css("/css/index.css")
     style(type="text/css"): :stylus
       .cell
@@ -15,14 +15,14 @@ html
         height: 100%
         background: rgba(0,0,0,.1)
 
-      .chart-layout > [data-type=layout]
+      .pd-layout > [data-type=layout]
         display: grid
         grid-template-columns: 6em 1fr
         grid-template-rows: 1fr 4em
 
   body
     .w-100.h-100.p-4
-      .w-100.h-100.chart-layout
+      .w-100.h-100.pd-layout
         .bg-light.border.rounded(data-type="layout")
           .bg-danger.cell(data-name="yaxis")
           .bg-dark.cell(data-name="view")
@@ -51,5 +51,5 @@ html
     +script("https://d3js.org/d3-timer.v2.min.js")
     +script("https://d3js.org/d3-force.v2.min.js")
 
-    +script("/assets/lib/chart-layout/dev/index.js")
+    +script("/assets/lib/@plotdb/layout/dev/index.js")
     +script("/js/index.js")

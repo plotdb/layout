@@ -12,8 +12,8 @@ echo "minifying index.css ..."
 npx uglifycss dist/index.css > dist/index.min.css
 
 echo "Copy dist/ to web/ ..."
-rm -rf web/static/assets/lib/chart-layout/dev/
-mkdir -p web/static/assets/lib/chart-layout/dev/
-cp -R dist/* web/static/assets/lib/chart-layout/dev/
+rm -rf web/static/assets/lib/@plotdb/layout/dev/
+mkdir -p web/static/assets/lib/@plotdb/layout/dev/
+cp -R dist/* web/static/assets/lib/@plotdb/layout/dev/
 echo "done."
 
