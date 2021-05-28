@@ -15,6 +15,7 @@ layout.prototype = Object.create(Object.prototype) <<< do
     cb.apply @
     @update!
   update: ->
+    if !@root => return
     @rbox = @root.getBoundingClientRect!
     Array.from(@root.querySelectorAll('[data-type=layout] .cell[data-name]')).map (node,i) ~>
       name = node.getAttribute \data-name
@@ -31,3 +32,4 @@ layout.prototype = Object.create(Object.prototype) <<< do
   get-group: -> @group[it]
 
 if window? => window.layout = layout
+if module? => module.exports = layout

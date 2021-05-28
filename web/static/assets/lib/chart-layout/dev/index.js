@@ -41,6 +41,9 @@
     },
     update: function(){
       var this$ = this;
+      if (!this.root) {
+        return;
+      }
       this.rbox = this.root.getBoundingClientRect();
       Array.from(this.root.querySelectorAll('[data-type=layout] .cell[data-name]')).map(function(node, i){
         var name, ref$, box, g;
@@ -75,6 +78,9 @@
   });
   if (typeof window != 'undefined' && window !== null) {
     window.layout = layout;
+  }
+  if (typeof module != 'undefined' && module !== null) {
+    module.exports = layout;
   }
   function import$(obj, src){
     var own = {}.hasOwnProperty;

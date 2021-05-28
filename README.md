@@ -1,4 +1,4 @@
-# chart-layout
+# @plotdb/layout
 
 Compute chart layout by HTML/CSS.
 
@@ -13,13 +13,13 @@ We will need 3 elements in following classes:
 
 A sample DOM structure in Pug:
  
-    #my-chart.chart
-      .chart-layout
-        .cell(name="yaxis")
-        .cell(name="view")
+    #my-chart.chart-layout
+      div(data-type="layout")
+        .cell(data-name="yaxis")
+        .cell(data-name="view")
         .cell
-        .cell(name="xaxis")
-      .chart-render
+        .cell(data-name="xaxis")
+      div(data-type="render")
         svg
           g.yaxis
           g.view: rect(ld-each="data")

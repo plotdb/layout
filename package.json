@@ -1,16 +1,16 @@
 {
   "author": "zbryikt",
-  "name": "chart-layout",
+  "name": "@plotdb/layout",
   "license": "MIT",
-  "description": "chart layout in CSS.",
+  "description": "Layout with CSS",
   "version": "0.0.1",
   "files": [
     "dist/**/*"
   ],
-  "homepage": "https://github.com/plotdb/chart-layout",
+  "homepage": "https://github.com/plotdb/layout",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plotdb/chart-layout"
+    "url": "https://github.com/plotdb/layout"
   },
   "engines": {
     "node": ">=10.14.1",
@@ -29,7 +29,7 @@
     "fedep": "^0.0.12",
     "ldview": "^0.0.2",
     "stylus": "^0.54.5",
-    "template": "github:zbryikt/template#v2.3.11",
+    "template": "github:zbryikt/template#v2.3.13",
     "uglify-js": "^3.2.0",
     "uglifycss": "^0.0.29"
   },
