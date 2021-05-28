@@ -1,3 +1,12 @@
+# v0.0.4
+
+ - tweak init process:
+   - layout init ( including prepare dom ) 
+   - caller init ( may alter dom )
+   - layout update ( lookup dom nodes again )
+     - wait init resolves if init return a promise.
+
+
 # v0.0.3
 
  - better scoping CSS class with `pdl` prefix. 

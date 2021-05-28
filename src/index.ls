@@ -24,14 +24,17 @@ layout.prototype = Object.create(Object.prototype) <<< do
         @root.querySelector('[data-type=render]').appendChild svg
       Array.from(@root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
         name = node.getAttribute \data-name
-        if (g = @root.querySelector("g.pdl-cell[data-name=#{name}]")) => return
-        g = document.createElementNS(svgns, "g")
-        svg.appendChild g
-        g.classList.add \pdl-cell
-        g.setAttribute \data-name, name
+        @node[name] = node
+        g = @root.querySelector("g.pdl-cell[data-name=#{name}]")
+        if !g =>
+          g = document.createElementNS(svgns, "g")
+          svg.appendChild g
+          g.classList.add \pdl-cell
+          g.setAttribute \data-name, name
+        @group[name] = g
 
-    cb.apply @
-    @update!
+    ret = cb.apply @
+    if typeof(ret.then) == \function => ret.then -> @update! else @update!
   update: ->
     if !@root => return
     @rbox = @root.getBoundingClientRect!

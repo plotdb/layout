@@ -3,7 +3,7 @@
   "name": "@plotdb/layout",
   "license": "MIT",
   "description": "Layout with CSS",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "files": [
     "dist/**/*"
   ],

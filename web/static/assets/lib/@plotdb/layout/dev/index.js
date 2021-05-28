@@ -36,7 +36,7 @@
     init: function(cb){
       var this$ = this;
       return Promise.resolve().then(function(){
-        var svg;
+        var svg, ret;
         window.addEventListener('resize', function(){
           return this$.update();
         });
@@ -51,17 +51,25 @@
           Array.from(this$.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
             var name, g;
             name = node.getAttribute('data-name');
-            if (g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]")) {
-              return;
+            this$.node[name] = node;
+            g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
+            if (!g) {
+              g = document.createElementNS(svgns, "g");
+              svg.appendChild(g);
+              g.classList.add('pdl-cell');
+              g.setAttribute('data-name', name);
             }
-            g = document.createElementNS(svgns, "g");
-            svg.appendChild(g);
-            g.classList.add('pdl-cell');
-            return g.setAttribute('data-name', name);
+            return this$.group[name] = g;
           });
         }
-        cb.apply(this$);
-        return this$.update();
+        ret = cb.apply(this$);
+        if (typeof ret.then === 'function') {
+          return ret.then(function(){
+            return this.update();
+          });
+        } else {
+          return this$.update();
+        }
       });
     },
     update: function(){
