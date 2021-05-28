@@ -1,6 +1,6 @@
 data = [0 to 20].map -> Math.round(Math.random! * 100)
 
-ml = new layout root: '.pd-layout'
+ml = new layout root: '.pdl-layout'
 ml.on \render, ->
   box = @get-box('view')
   @{}lc.{}scale.y = d3.scaleLinear!
@@ -17,7 +17,7 @@ ml.on \render, ->
 
 ml.init ->
   @{}lc.view = new ldView do
-    root: ld$.find 'g.view', 0
+    root: ld$.find 'g[data-name=view]', 0
     init-render: false
     handler: data:
       list: -> data

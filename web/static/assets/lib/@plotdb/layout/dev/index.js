@@ -1,10 +1,14 @@
 (function(){
-  var layout;
+  var svgns, layout;
+  svgns = "http://www.w3.org/2000/svg";
   layout = function(opt){
     opt == null && (opt = {});
     this.root = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
+    this.opt = import$({
+      autoSvg: true
+    }, opt);
     this.evtHandler = {};
     this.box = {};
     this.node = {};
@@ -32,9 +36,30 @@
     init: function(cb){
       var this$ = this;
       return Promise.resolve().then(function(){
+        var svg;
         window.addEventListener('resize', function(){
           return this$.update();
         });
+        if (!(this$.opt.autoSvg != null) || this$.opt.autoSvg) {
+          svg = this$.root.querySelector('[data-type=render] > svg');
+          if (!svg) {
+            svg = document.createElementNS(svgns, "svg");
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            this$.root.querySelector('[data-type=render]').appendChild(svg);
+          }
+          Array.from(this$.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
+            var name, g;
+            name = node.getAttribute('data-name');
+            if (g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]")) {
+              return;
+            }
+            g = document.createElementNS(svgns, "g");
+            svg.appendChild(g);
+            g.classList.add('pdl-cell');
+            return g.setAttribute('data-name', name);
+          });
+        }
         cb.apply(this$);
         return this$.update();
       });
@@ -45,7 +70,7 @@
         return;
       }
       this.rbox = this.root.getBoundingClientRect();
-      Array.from(this.root.querySelectorAll('[data-type=layout] .cell[data-name]')).map(function(node, i){
+      Array.from(this.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
         var name, ref$, box, g;
         name = node.getAttribute('data-name');
         this$.node[name] = node;
@@ -57,7 +82,7 @@
         };
         box.x -= this$.rbox.x;
         box.y -= this$.rbox.y;
-        this$.group[name] = g = this$.root.querySelector("g." + name);
+        this$.group[name] = g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
         g.setAttribute('transform', "translate(" + box.x + "," + box.y + ")");
         return g.layout = {
           node: node,

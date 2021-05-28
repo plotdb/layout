@@ -8,32 +8,29 @@ html
     +css("/assets/lib/@plotdb/layout/dev/index.min.css")
     +css("/css/index.css")
     style(type="text/css"): :stylus
-      .cell
+      .pdl-cell
         padding: 1em
       svg
         width: 100%
         height: 100%
         background: rgba(0,0,0,.1)
 
-      .pd-layout > [data-type=layout]
+      .pdl-layout > [data-type=layout]
         display: grid
         grid-template-columns: 6em 1fr
         grid-template-rows: 1fr 4em
 
   body
     .w-100.h-100.p-4
-      .w-100.h-100.pd-layout
+      .w-100.h-100.pdl-layout
         .bg-light.border.rounded(data-type="layout")
-          .bg-danger.cell(data-name="yaxis")
-          .bg-dark.cell(data-name="view")
-          .bg-info.cell
-          .bg-primary.cell(data-name="xaxis")
+          .bg-danger.pdl-cell(data-name="yaxis")
+          .bg-dark.pdl-cell(data-name="view")
+          .bg-info.pdl-cell
+          .bg-primary.pdl-cell(data-name="xaxis")
         div(data-type="render")
           svg
-            g.yaxis
-            g.view: rect(ld-each="data")
-            g
-            g.xaxis
+            g.pdl-cell(data-name="view"): rect(ld-each="data")
 
     +script("/assets/lib/@loadingio/ldquery/main/ldq.min.js")
     +script("/assets/lib/ldview/main/ldview.min.js")
