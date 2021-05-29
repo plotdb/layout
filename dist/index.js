@@ -68,7 +68,7 @@
         ret = cb.apply(this$);
         if (typeof ret.then === 'function') {
           return ret.then(function(){
-            return this.update();
+            return this$.update();
           });
         } else {
           return this$.update();

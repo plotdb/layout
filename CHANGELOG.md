@@ -1,3 +1,8 @@
+# v0.0.6
+
+ - fix bug: init cb with promise should use long wavy arrow 
+
+
 # v0.0.5
 
  - add css rules for `data-debug` for checking layout result

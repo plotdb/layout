@@ -35,7 +35,7 @@ layout.prototype = Object.create(Object.prototype) <<< do
         @group[name] = g
 
     ret = cb.apply @
-    if typeof(ret.then) == \function => ret.then -> @update! else @update!
+    if typeof(ret.then) == \function => ret.then(~>@update!) else @update!
   # opt: fire rendering event if opt is true or undefined.
   update: (opt) ->
     if !@root => return
