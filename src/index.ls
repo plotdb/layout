@@ -52,7 +52,15 @@ layout.prototype = Object.create(Object.prototype) <<< do
       g.setAttribute \transform, "translate(#{box.x},#{box.y})"
       g.layout = {node, box}
     if !(opt?) or opt => @fire \render
-  get-box: -> @box[it]
+  get-box: ->
+    # from cached value:
+    #return @box[it]
+    # or realtime value:
+    rbox = @root.getBoundingClientRect!
+    box = @get-node(it).getBoundingClientRect!
+    box.x -= rbox.x
+    box.y -= rbox.y
+    return box
   get-node: -> @node[it]
   get-group: -> @group[it]
 

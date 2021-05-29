@@ -111,7 +111,12 @@
       }
     },
     getBox: function(it){
-      return this.box[it];
+      var rbox, box;
+      rbox = this.root.getBoundingClientRect();
+      box = this.getNode(it).getBoundingClientRect();
+      box.x -= rbox.x;
+      box.y -= rbox.y;
+      return box;
     },
     getNode: function(it){
       return this.node[it];

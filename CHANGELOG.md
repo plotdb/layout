@@ -1,3 +1,8 @@
+# v0.0.7
+
+ - always get the latest box info when `getBox` is called.
+
+
 # v0.0.6
 
  - fix bug: init cb with promise should use long wavy arrow 
