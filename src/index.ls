@@ -25,6 +25,7 @@ layout.prototype = Object.create(Object.prototype) <<< do
       Array.from(@root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
         name = node.getAttribute \data-name
         @node[name] = node
+        if node.hasAttribute \data-only => return
         g = @root.querySelector("g.pdl-cell[data-name=#{name}]")
         if !g =>
           g = document.createElementNS(svgns, "g")
@@ -35,8 +36,10 @@ layout.prototype = Object.create(Object.prototype) <<< do
 
     ret = cb.apply @
     if typeof(ret.then) == \function => ret.then -> @update! else @update!
-  update: ->
+  # opt: fire rendering event if opt is true or undefined.
+  update: (opt) ->
     if !@root => return
+    if !(opt?) or opt => @fire \update
     @rbox = @root.getBoundingClientRect!
     Array.from(@root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
       name = node.getAttribute \data-name
@@ -44,10 +47,11 @@ layout.prototype = Object.create(Object.prototype) <<< do
       @box[name] = box = node.getBoundingClientRect!{x,y,width,height}
       box.x -= @rbox.x
       box.y -= @rbox.y
+      if node.hasAttribute \data-only => return
       @group[name] = g = @root.querySelector("g.pdl-cell[data-name=#{name}]")
       g.setAttribute \transform, "translate(#{box.x},#{box.y})"
       g.layout = {node, box}
-    @fire \render
+    if !(opt?) or opt => @fire \render
   get-box: -> @box[it]
   get-node: -> @node[it]
   get-group: -> @group[it]

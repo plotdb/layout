@@ -1,3 +1,10 @@
+# v0.0.5
+
+ - add css rules for `data-debug` for checking layout result
+ - add `data-only` tag for indicating layout elements with manually generated render element counterparts.
+ - add option in `update` function call to force not rendering.
+
+
 # v0.0.4
 
  - tweak init process:

@@ -52,6 +52,9 @@
             var name, g;
             name = node.getAttribute('data-name');
             this$.node[name] = node;
+            if (node.hasAttribute('data-only')) {
+              return;
+            }
             g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
             if (!g) {
               g = document.createElementNS(svgns, "g");
@@ -72,10 +75,13 @@
         }
       });
     },
-    update: function(){
+    update: function(opt){
       var this$ = this;
       if (!this.root) {
         return;
+      }
+      if (!(opt != null) || opt) {
+        this.fire('update');
       }
       this.rbox = this.root.getBoundingClientRect();
       Array.from(this.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
@@ -90,6 +96,9 @@
         };
         box.x -= this$.rbox.x;
         box.y -= this$.rbox.y;
+        if (node.hasAttribute('data-only')) {
+          return;
+        }
         this$.group[name] = g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
         g.setAttribute('transform', "translate(" + box.x + "," + box.y + ")");
         return g.layout = {
@@ -97,7 +106,9 @@
           box: box
         };
       });
-      return this.fire('render');
+      if (!(opt != null) || opt) {
+        return this.fire('render');
+      }
     },
     getBox: function(it){
       return this.box[it];
