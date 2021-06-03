@@ -1,3 +1,8 @@
+# v0.0.8
+
+ - fix bug: check return value of init callback before accessing its members.
+
+
 # v0.0.7
 
  - always get the latest box info when `getBox` is called.

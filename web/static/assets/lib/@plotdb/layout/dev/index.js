@@ -66,7 +66,7 @@
           });
         }
         ret = cb.apply(this$);
-        if (typeof ret.then === 'function') {
+        if (ret && typeof ret.then === 'function') {
           return ret.then(function(){
             return this$.update();
           });
