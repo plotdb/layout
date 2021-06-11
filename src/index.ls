@@ -3,18 +3,32 @@ svgns = "http://www.w3.org/2000/svg"
 layout = (opt={}) ->
   @root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @opt = {auto-svg: true} <<< opt
+  if !(@opt.watch-resize?) => @opt.watch-resize = true
   @evt-handler = {}
   @box = {}
   @node = {}
   @group = {}
   @
 
+resizeObserver = do
+  wm: new WeakMap!
+  ro: new ResizeObserver (list) ->
+    list.map (n) ->
+      ret = resizeObserver.wm.get(n.target)
+      ret.update!
+  add: (node, obj) ->
+    @wm.set node, obj
+    @ro.observe node
+  delete: ->
+    @ro.unobserve it
+    @wm.delete it
+
 layout.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> @evt-handler.[][n].push cb
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
   init: (cb) ->
     <~ Promise.resolve!then _
-    window.addEventListener \resize, ~> @update!
+    if @opt.watch-resize => resizeObserver.add @root, @
     if (!(@opt.auto-svg?) or @opt.auto-svg) =>
       svg = @root.querySelector('[data-type=render] > svg')
       if !svg =>
@@ -36,6 +50,7 @@ layout.prototype = Object.create(Object.prototype) <<< do
 
     ret = cb.apply @
     if ret and typeof(ret.then) == \function => ret.then(~>@update!) else @update!
+  destroy: -> resizeObserver.delete @root
   # opt: fire rendering event if opt is true or undefined.
   update: (opt) ->
     if !@root => return

@@ -1,5 +1,5 @@
 (function(){
-  var svgns, layout;
+  var svgns, layout, resizeObserver;
   svgns = "http://www.w3.org/2000/svg";
   layout = function(opt){
     opt == null && (opt = {});
@@ -9,11 +9,32 @@
     this.opt = import$({
       autoSvg: true
     }, opt);
+    if (!(this.opt.watchResize != null)) {
+      this.opt.watchResize = true;
+    }
     this.evtHandler = {};
     this.box = {};
     this.node = {};
     this.group = {};
     return this;
+  };
+  resizeObserver = {
+    wm: new WeakMap(),
+    ro: new ResizeObserver(function(list){
+      return list.map(function(n){
+        var ret;
+        ret = resizeObserver.wm.get(n.target);
+        return ret.update();
+      });
+    }),
+    add: function(node, obj){
+      this.wm.set(node, obj);
+      return this.ro.observe(node);
+    },
+    'delete': function(it){
+      this.ro.unobserve(it);
+      return this.wm['delete'](it);
+    }
   };
   layout.prototype = import$(Object.create(Object.prototype), {
     on: function(n, cb){
@@ -37,9 +58,9 @@
       var this$ = this;
       return Promise.resolve().then(function(){
         var svg, ret;
-        window.addEventListener('resize', function(){
-          return this$.update();
-        });
+        if (this$.opt.watchResize) {
+          resizeObserver.add(this$.root, this$);
+        }
         if (!(this$.opt.autoSvg != null) || this$.opt.autoSvg) {
           svg = this$.root.querySelector('[data-type=render] > svg');
           if (!svg) {
@@ -74,6 +95,9 @@
           return this$.update();
         }
       });
+    },
+    destroy: function(){
+      return resizeObserver['delete'](this.root);
     },
     update: function(opt){
       var this$ = this;

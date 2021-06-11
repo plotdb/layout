@@ -40,10 +40,17 @@ then, init with JS:
     mylayout.init -> ... /* initializing ... */
 
 
+when the layout object is no longer needed, one should destroy it:
+
+    mylayout.destroy!
+
+
 ## Configuration
 
  - `autoSvg`: true if automatically create corresponding `svg` and `g` element. default true
    - even with `autoSvg` enabled, user can still prepare partial svg / g elements. `@plotdb/layout` will fill the missing parts automatically.
+ - `watchResize': true if automatically calls `update` when container resized. default true.
+   - by disabling this you will have to manually call `update` when you want to update layout.
 
 
 ## SVG styling
@@ -52,3 +59,8 @@ when rendering text manually with SVG, one should be aware of following settings
 
  - `line-height` should be `1em` in HTML layout.
  - `dominant-baselin` should be `hanging` in SVG text.
+
+
+## License
+
+MIT
