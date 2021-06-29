@@ -58,7 +58,7 @@ when the layout object is no longer needed, one should destroy it:
 when rendering text manually with SVG, one should be aware of following settings:
 
  - `line-height` should be `1em` in HTML layout.
- - `dominant-baselin` should be `hanging` in SVG text.
+ - `dominant-baseline` should be `hanging` in SVG text.
 
 
 ## License
