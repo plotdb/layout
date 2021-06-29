@@ -49,7 +49,7 @@ when the layout object is no longer needed, one should destroy it:
 
  - `autoSvg`: true if automatically create corresponding `svg` and `g` element. default true
    - even with `autoSvg` enabled, user can still prepare partial svg / g elements. `@plotdb/layout` will fill the missing parts automatically.
- - `watchResize': true if automatically calls `update` when container resized. default true.
+ - `watchResize`: true if automatically calls `update` when container resized. default true.
    - by disabling this you will have to manually call `update` when you want to update layout.
 
 
