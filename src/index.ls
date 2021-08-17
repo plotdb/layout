@@ -2,7 +2,7 @@ svgns = "http://www.w3.org/2000/svg"
 
 layout = (opt={}) ->
   @root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
-  @opt = {auto-svg: true} <<< opt
+  @opt = {auto-svg: true, round: true} <<< opt
   if !(@opt.watch-resize?) => @opt.watch-resize = true
   @evt-handler = {}
   @box = {}
@@ -51,33 +51,46 @@ layout.prototype = Object.create(Object.prototype) <<< do
     ret = cb.apply @
     if ret and typeof(ret.then) == \function => ret.then(~>@update!) else @update!
   destroy: -> resizeObserver.delete @root
+  _rebox: (b) ->
+    if !@opt.round => return b
+    ret = {}
+    ret.x = Math.round(b.x)
+    ret.width = Math.round(b.x + b.width) - ret.x
+    ret.y = Math.round(b.y)
+    ret.height = Math.round(b.y + b.height) - ret.y
+    return ret
+
   # opt: fire rendering event if opt is true or undefined.
   update: (opt) ->
     if !@root => return
     if !(opt?) or opt => @fire \update
-    @rbox = @root.getBoundingClientRect!
+    @rbox = @_rebox(@root.getBoundingClientRect!)
+
     Array.from(@root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
       name = node.getAttribute \data-name
       @node[name] = node
-      @box[name] = box = node.getBoundingClientRect!{x,y,width,height}
+      @box[name] = box = @_rebox(node.getBoundingClientRect!)
+
       box.x -= @rbox.x
       box.y -= @rbox.y
       if node.hasAttribute \data-only => return
       @group[name] = g = @root.querySelector("g.pdl-cell[data-name=#{name}]")
-      g.setAttribute \transform, "translate(#{box.x},#{box.y})"
+      g.setAttribute \transform, "translate(#{Math.round(box.x)},#{Math.round(box.y)})"
       g.layout = {node, box}
     if !(opt?) or opt => @fire \render
-  get-box: ->
+  get-box: (n, cached = false) ->
     # from cached value:
-    #return @box[it]
+    if cached => return @box[n]
     # or realtime value:
-    rbox = @root.getBoundingClientRect!
-    box = @get-node(it).getBoundingClientRect!
+    rbox = @_rebox(@root.getBoundingClientRect!)
+    box = @_rebox(@get-node(n).getBoundingClientRect!)
     box.x -= rbox.x
     box.y -= rbox.y
     return box
   get-node: -> @node[it]
   get-group: -> @group[it]
+  get-nodes: -> {} <<< @node
+  get-groups: -> {} <<< @group
 
 if window? => window.layout = layout
 if module? => module.exports = layout

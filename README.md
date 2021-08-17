@@ -51,7 +51,26 @@ when the layout object is no longer needed, one should destroy it:
    - even with `autoSvg` enabled, user can still prepare partial svg / g elements. `@plotdb/layout` will fill the missing parts automatically.
  - `watchResize`: true if automatically calls `update` when container resized. default true.
    - by disabling this you will have to manually call `update` when you want to update layout.
+ - `round`: set true to automatically round dimensions. default true.
 
+
+## API
+
+ - `init(cb)`: initialize layout. optional `cb` callback function.
+   - `cb()`: a function called before `update` but after groups are prepared.
+     - run with the context of the inited layout object.
+     - if it returns a promise, `@plotdb/layout` waits until it resolves before calling `update`
+ - `getNode(name)`: get layout node by `name`
+ - `getNodes`: get all layout nodes in an object, hashed by names
+ - `getGroup(name)`: get render `g` by `name`
+ - `getGroups`: get all render `g` in an object, hashed by names
+ - `getBox(name,cached)`: -> get bounding client rect or node by `name`.
+   - `cached`: return cached version if true. default false ( computed in realtime )
+ - `update(opt)`: update layout. ( update position of all groups )
+   - fire rendering event if `opt` is `true`. default false.
+ - `destroy()`: destroy function
+ - `on(n,cb)`: handle `n` event with `cb` callback function.
+ - `fire(n, ...v)`: fire `n` event with parameters in v.
 
 ## SVG styling
 

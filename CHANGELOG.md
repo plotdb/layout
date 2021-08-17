@@ -1,5 +1,12 @@
 # Change Logs
 
+## v0.0.10
+
+ - add `getNodes` and `getGroups` api for convenience.
+ - round result for more crisp rendering
+ - add `cached` option in `getBox` for returning cached box.
+
+
 ## v0.0.9
 
  - use resizeObserver to watch resize and add config for toggling it on/off.

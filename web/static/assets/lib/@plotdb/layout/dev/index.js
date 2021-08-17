@@ -7,7 +7,8 @@
       ? document.querySelector(opt.root)
       : opt.root;
     this.opt = import$({
-      autoSvg: true
+      autoSvg: true,
+      round: true
     }, opt);
     if (!(this.opt.watchResize != null)) {
       this.opt.watchResize = true;
@@ -99,6 +100,18 @@
     destroy: function(){
       return resizeObserver['delete'](this.root);
     },
+    _rebox: function(b){
+      var ret;
+      if (!this.opt.round) {
+        return b;
+      }
+      ret = {};
+      ret.x = Math.round(b.x);
+      ret.width = Math.round(b.x + b.width) - ret.x;
+      ret.y = Math.round(b.y);
+      ret.height = Math.round(b.y + b.height) - ret.y;
+      return ret;
+    },
     update: function(opt){
       var this$ = this;
       if (!this.root) {
@@ -107,24 +120,19 @@
       if (!(opt != null) || opt) {
         this.fire('update');
       }
-      this.rbox = this.root.getBoundingClientRect();
+      this.rbox = this._rebox(this.root.getBoundingClientRect());
       Array.from(this.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
-        var name, ref$, box, g;
+        var name, box, g;
         name = node.getAttribute('data-name');
         this$.node[name] = node;
-        this$.box[name] = box = {
-          x: (ref$ = node.getBoundingClientRect()).x,
-          y: ref$.y,
-          width: ref$.width,
-          height: ref$.height
-        };
+        this$.box[name] = box = this$._rebox(node.getBoundingClientRect());
         box.x -= this$.rbox.x;
         box.y -= this$.rbox.y;
         if (node.hasAttribute('data-only')) {
           return;
         }
         this$.group[name] = g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
-        g.setAttribute('transform', "translate(" + box.x + "," + box.y + ")");
+        g.setAttribute('transform', "translate(" + Math.round(box.x) + "," + Math.round(box.y) + ")");
         return g.layout = {
           node: node,
           box: box
@@ -134,10 +142,14 @@
         return this.fire('render');
       }
     },
-    getBox: function(it){
+    getBox: function(n, cached){
       var rbox, box;
-      rbox = this.root.getBoundingClientRect();
-      box = this.getNode(it).getBoundingClientRect();
+      cached == null && (cached = false);
+      if (cached) {
+        return this.box[n];
+      }
+      rbox = this._rebox(this.root.getBoundingClientRect());
+      box = this._rebox(this.getNode(n).getBoundingClientRect());
       box.x -= rbox.x;
       box.y -= rbox.y;
       return box;
@@ -147,6 +159,12 @@
     },
     getGroup: function(it){
       return this.group[it];
+    },
+    getNodes: function(){
+      return import$({}, this.node);
+    },
+    getGroups: function(){
+      return import$({}, this.group);
     }
   });
   if (typeof window != 'undefined' && window !== null) {
