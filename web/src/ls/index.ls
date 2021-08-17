@@ -11,10 +11,12 @@ ml.init ->
   legends2 = [0 to 5].map (d,i) -> {key: d, text: rand-text!}
   #legends = [0 to 0].map (d,i) -> {key: d, text: rand-text!}
   #legends2 = [0 to 0].map (d,i) -> {key: d, text: rand-text!}
+  /*
   legend = new pd-legend do
     root: '.pdl-layout', data: legends, layout: ml
     shape: (d) -> d3.select(@).attr \fill, <[#f00 #0f0 #00f]>[d.key % 3]
   legend-bottom = new pd-legend {root: '.pdl-layout', name: 'legend-bottom', data: legends2, layout: ml}
+  */
   data = [0 to 20].map -> Math.round(Math.random! * 100)
   ml.on \render, ->
     ml.update false

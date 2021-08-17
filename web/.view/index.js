@@ -206,7 +206,7 @@ pug_mixins["script"]("https://d3js.org/d3-force.v2.min.js");
 ;pug_debug_line = 69;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_mixins["script"]("/assets/lib/@plotdb/layout/dev/index.js");
 ;pug_debug_line = 70;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_mixins["script"]("/js/pd-legend.js");
+pug_html = pug_html + "\u003C!--+script(\"\u002Fjs\u002Fpd-legend.js\")--\u003E";
 ;pug_debug_line = 71;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_mixins["script"]("/js/index.js");
 pug_html = pug_html + "\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";

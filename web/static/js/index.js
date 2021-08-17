@@ -10,7 +10,7 @@ ml = new layout({
   root: '.pdl-layout'
 });
 ml.init(function(){
-  var legends, legends2, legend, legendBottom, data, this$ = this;
+  var legends, legends2, data, this$ = this;
   legends = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(d, i){
     return {
       key: d,
@@ -23,20 +23,12 @@ ml.init(function(){
       text: randText()
     };
   });
-  legend = new pdLegend({
-    root: '.pdl-layout',
-    data: legends,
-    layout: ml,
-    shape: function(d){
-      return d3.select(this).attr('fill', ['#f00', '#0f0', '#00f'][d.key % 3]);
-    }
-  });
-  legendBottom = new pdLegend({
-    root: '.pdl-layout',
-    name: 'legend-bottom',
-    data: legends2,
-    layout: ml
-  });
+  /*
+  legend = new pd-legend do
+    root: '.pdl-layout', data: legends, layout: ml
+    shape: (d) -> d3.select(@).attr \fill, <[#f00 #0f0 #00f]>[d.key % 3]
+  legend-bottom = new pd-legend {root: '.pdl-layout', name: 'legend-bottom', data: legends2, layout: ml}
+  */
   data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(function(){
     return Math.round(Math.random() * 100);
   });
