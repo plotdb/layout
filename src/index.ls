@@ -1,7 +1,7 @@
 svgns = "http://www.w3.org/2000/svg"
 
 layout = (opt={}) ->
-  @root = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
+  @_r = if typeof(opt.root) == \string => document.querySelector(opt.root) else opt.root
   @opt = {auto-svg: true, round: true} <<< opt
   if !(@opt.watch-resize?) => @opt.watch-resize = true
   @evt-handler = {}
@@ -28,19 +28,19 @@ layout.prototype = Object.create(Object.prototype) <<< do
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
   init: (cb) ->
     <~ Promise.resolve!then _
-    if @opt.watch-resize => resizeObserver.add @root, @
+    if @opt.watch-resize => resizeObserver.add @_r, @
     if (!(@opt.auto-svg?) or @opt.auto-svg) =>
-      svg = @root.querySelector('[data-type=render] > svg')
+      svg = @_r.querySelector('[data-type=render] > svg')
       if !svg =>
         svg = document.createElementNS(svgns, "svg")
         svg.setAttribute \width, \100%
         svg.setAttribute \height, \100%
-        @root.querySelector('[data-type=render]').appendChild svg
-      Array.from(@root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
+        @_r.querySelector('[data-type=render]').appendChild svg
+      Array.from(@_r.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
         name = node.getAttribute \data-name
         @node[name] = node
         if node.hasAttribute \data-only => return
-        g = @root.querySelector("g.pdl-cell[data-name=#{name}]")
+        g = @_r.querySelector("g.pdl-cell[data-name=#{name}]")
         if !g =>
           g = document.createElementNS(svgns, "g")
           svg.appendChild g
@@ -50,7 +50,7 @@ layout.prototype = Object.create(Object.prototype) <<< do
 
     ret = cb.apply @
     if ret and typeof(ret.then) == \function => ret.then(~>@update!) else @update!
-  destroy: -> resizeObserver.delete @root
+  destroy: -> resizeObserver.delete @_r
   _rebox: (b) ->
     if !@opt.round => return b
     ret = {}
@@ -62,11 +62,11 @@ layout.prototype = Object.create(Object.prototype) <<< do
 
   # opt: fire rendering event if opt is true or undefined.
   update: (opt) ->
-    if !@root => return
+    if !@_r => return
     if !(opt?) or opt => @fire \update
-    @rbox = @_rebox(@root.getBoundingClientRect!)
+    @rbox = @_rebox(@_r.getBoundingClientRect!)
 
-    Array.from(@root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
+    Array.from(@_r.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
       name = node.getAttribute \data-name
       @node[name] = node
       @box[name] = box = @_rebox(node.getBoundingClientRect!)
@@ -74,15 +74,16 @@ layout.prototype = Object.create(Object.prototype) <<< do
       box.x -= @rbox.x
       box.y -= @rbox.y
       if node.hasAttribute \data-only => return
-      @group[name] = g = @root.querySelector("g.pdl-cell[data-name=#{name}]")
+      @group[name] = g = @_r.querySelector("g.pdl-cell[data-name=#{name}]")
       g.setAttribute \transform, "translate(#{Math.round(box.x)},#{Math.round(box.y)})"
       g.layout = {node, box}
     if !(opt?) or opt => @fire \render
+  root: -> @_r
   get-box: (n, cached = false) ->
     # from cached value:
     if cached => return @box[n]
     # or realtime value:
-    rbox = @_rebox(@root.getBoundingClientRect!)
+    rbox = @_rebox(@_r.getBoundingClientRect!)
     box = @_rebox(@get-node(n).getBoundingClientRect!)
     box.x -= rbox.x
     box.y -= rbox.y

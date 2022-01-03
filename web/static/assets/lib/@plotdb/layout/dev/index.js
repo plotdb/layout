@@ -3,7 +3,7 @@
   svgns = "http://www.w3.org/2000/svg";
   layout = function(opt){
     opt == null && (opt = {});
-    this.root = typeof opt.root === 'string'
+    this._r = typeof opt.root === 'string'
       ? document.querySelector(opt.root)
       : opt.root;
     this.opt = import$({
@@ -60,24 +60,24 @@
       return Promise.resolve().then(function(){
         var svg, ret;
         if (this$.opt.watchResize) {
-          resizeObserver.add(this$.root, this$);
+          resizeObserver.add(this$._r, this$);
         }
         if (!(this$.opt.autoSvg != null) || this$.opt.autoSvg) {
-          svg = this$.root.querySelector('[data-type=render] > svg');
+          svg = this$._r.querySelector('[data-type=render] > svg');
           if (!svg) {
             svg = document.createElementNS(svgns, "svg");
             svg.setAttribute('width', '100%');
             svg.setAttribute('height', '100%');
-            this$.root.querySelector('[data-type=render]').appendChild(svg);
+            this$._r.querySelector('[data-type=render]').appendChild(svg);
           }
-          Array.from(this$.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
+          Array.from(this$._r.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
             var name, g;
             name = node.getAttribute('data-name');
             this$.node[name] = node;
             if (node.hasAttribute('data-only')) {
               return;
             }
-            g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
+            g = this$._r.querySelector("g.pdl-cell[data-name=" + name + "]");
             if (!g) {
               g = document.createElementNS(svgns, "g");
               svg.appendChild(g);
@@ -98,7 +98,7 @@
       });
     },
     destroy: function(){
-      return resizeObserver['delete'](this.root);
+      return resizeObserver['delete'](this._r);
     },
     _rebox: function(b){
       var ret;
@@ -114,14 +114,14 @@
     },
     update: function(opt){
       var this$ = this;
-      if (!this.root) {
+      if (!this._r) {
         return;
       }
       if (!(opt != null) || opt) {
         this.fire('update');
       }
-      this.rbox = this._rebox(this.root.getBoundingClientRect());
-      Array.from(this.root.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
+      this.rbox = this._rebox(this._r.getBoundingClientRect());
+      Array.from(this._r.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
         var name, box, g;
         name = node.getAttribute('data-name');
         this$.node[name] = node;
@@ -131,7 +131,7 @@
         if (node.hasAttribute('data-only')) {
           return;
         }
-        this$.group[name] = g = this$.root.querySelector("g.pdl-cell[data-name=" + name + "]");
+        this$.group[name] = g = this$._r.querySelector("g.pdl-cell[data-name=" + name + "]");
         g.setAttribute('transform', "translate(" + Math.round(box.x) + "," + Math.round(box.y) + ")");
         return g.layout = {
           node: node,
@@ -142,13 +142,16 @@
         return this.fire('render');
       }
     },
+    root: function(){
+      return this._r;
+    },
     getBox: function(n, cached){
       var rbox, box;
       cached == null && (cached = false);
       if (cached) {
         return this.box[n];
       }
-      rbox = this._rebox(this.root.getBoundingClientRect());
+      rbox = this._rebox(this._r.getBoundingClientRect());
       box = this._rebox(this.getNode(n).getBoundingClientRect());
       box.x -= rbox.x;
       box.y -= rbox.y;

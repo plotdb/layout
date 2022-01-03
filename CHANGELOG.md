@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.11
+
+ - add API for getting root node
+
+
 ## v0.0.10
 
  - add `getNodes` and `getGroups` api for convenience.

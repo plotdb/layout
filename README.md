@@ -60,6 +60,7 @@ when the layout object is no longer needed, one should destroy it:
    - `cb()`: a function called before `update` but after groups are prepared.
      - run with the context of the inited layout object.
      - if it returns a promise, `@plotdb/layout` waits until it resolves before calling `update`
+ - `root()`: get root node
  - `getNode(name)`: get layout node by `name`
  - `getNodes`: get all layout nodes in an object, hashed by names
  - `getGroup(name)`: get render `g` by `name`
