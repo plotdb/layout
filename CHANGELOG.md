@@ -1,5 +1,17 @@
 # Change Logs
 
+## v0.0.12
+
+ - update `window` only if `module` is not found
+ - further minimize generated js file with mangling and compression
+ - add `style` in `package.json`
+ - add `main` and `browser` field in `package.json`.
+ - upgrade modules
+ - remove assets files from git
+ - patch test code to make it work with upgraded modules
+ - release with compact directory structure
+
+
 ## v0.0.11
 
  - add API for getting root node
