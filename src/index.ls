@@ -93,5 +93,5 @@ layout.prototype = Object.create(Object.prototype) <<< do
   get-nodes: -> {} <<< @node
   get-groups: -> {} <<< @group
 
-if window? => window.layout = layout
 if module? => module.exports = layout
+else if window? => window.layout = layout

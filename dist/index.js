@@ -170,11 +170,10 @@
       return import$({}, this.group);
     }
   });
-  if (typeof window != 'undefined' && window !== null) {
-    window.layout = layout;
-  }
   if (typeof module != 'undefined' && module !== null) {
     module.exports = layout;
+  } else if (typeof window != 'undefined' && window !== null) {
+    window.layout = layout;
   }
   function import$(obj, src){
     var own = {}.hasOwnProperty;
