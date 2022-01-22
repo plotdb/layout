@@ -4,6 +4,9 @@
   "license": "MIT",
   "description": "Layout with CSS",
   "version": "0.0.11",
+  "style": "dist/index.min.css",
+  "browser": "dist/index.min.js",
+  "main": "dist/index.min.js",
   "files": [
     "dist/**/*"
   ],
