@@ -51,6 +51,23 @@ layout.prototype = Object.create(Object.prototype) <<< do
     ret = cb.apply @
     if ret and typeof(ret.then) == \function => ret.then(~>@update!) else @update!
   destroy: -> resizeObserver.delete @_r
+  # box of `node` relative to root, in root's own ( untransformed ) coordinate.
+  #
+  # getBoundingClientRect returns the *visual* box, so an ancestor transform such as
+  # `transform: scale(k)` scales it by k - using it as svg coordinate then applies k twice.
+  # offsetWidth / offsetHeight are layout sizes not affected by ancestor transforms,
+  # so we derive the scale factor of root from their ratio and divide it out.
+  # ( offset* are integers; ignore difference under 1px to avoid introducing error. )
+  _measure: (node) ->
+    rr = @_r.getBoundingClientRect!
+    [ow, oh] = [@_r.offsetWidth, @_r.offsetHeight]
+    sx = if ow and Math.abs(rr.width - ow) >= 1 => rr.width / ow else 1
+    sy = if oh and Math.abs(rr.height - oh) >= 1 => rr.height / oh else 1
+    rbox = {x: 0, y: 0, width: rr.width / sx, height: rr.height / sy}
+    if !node => return rbox
+    b = node.getBoundingClientRect!
+    return {x: (b.x - rr.x) / sx, y: (b.y - rr.y) / sy, width: b.width / sx, height: b.height / sy}
+
   _rebox: (b) ->
     if !@opt.round => return b
     ret = {}
@@ -64,15 +81,12 @@ layout.prototype = Object.create(Object.prototype) <<< do
   update: (opt) ->
     if !@_r => return
     if !(opt?) or opt => @fire \update
-    @rbox = @_rebox(@_r.getBoundingClientRect!)
+    @rbox = @_rebox(@_measure!)
 
     Array.from(@_r.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map (node,i) ~>
       name = node.getAttribute \data-name
       @node[name] = node
-      @box[name] = box = @_rebox(node.getBoundingClientRect!)
-
-      box.x -= @rbox.x
-      box.y -= @rbox.y
+      @box[name] = box = @_rebox(@_measure node)
       if node.hasAttribute \data-only => return
       @group[name] = g = @_r.querySelector("g.pdl-cell[data-name=#{name}]")
       g.setAttribute \transform, "translate(#{Math.round(box.x)},#{Math.round(box.y)})"
@@ -83,11 +97,7 @@ layout.prototype = Object.create(Object.prototype) <<< do
     # from cached value:
     if cached => return @box[n]
     # or realtime value:
-    rbox = @_rebox(@_r.getBoundingClientRect!)
-    box = @_rebox(@get-node(n).getBoundingClientRect!)
-    box.x -= rbox.x
-    box.y -= rbox.y
-    return box
+    return @_rebox(@_measure @get-node(n))
   get-node: -> @node[it]
   get-group: -> @group[it]
   get-nodes: -> {} <<< @node

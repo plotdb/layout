@@ -100,6 +100,29 @@
     destroy: function(){
       return resizeObserver['delete'](this._r);
     },
+    _measure: function(node){
+      var rr, ref$, ow, oh, sx, sy, rbox, b;
+      rr = this._r.getBoundingClientRect();
+      ref$ = [this._r.offsetWidth, this._r.offsetHeight], ow = ref$[0], oh = ref$[1];
+      sx = ow && Math.abs(rr.width - ow) >= 1 ? rr.width / ow : 1;
+      sy = oh && Math.abs(rr.height - oh) >= 1 ? rr.height / oh : 1;
+      rbox = {
+        x: 0,
+        y: 0,
+        width: rr.width / sx,
+        height: rr.height / sy
+      };
+      if (!node) {
+        return rbox;
+      }
+      b = node.getBoundingClientRect();
+      return {
+        x: (b.x - rr.x) / sx,
+        y: (b.y - rr.y) / sy,
+        width: b.width / sx,
+        height: b.height / sy
+      };
+    },
     _rebox: function(b){
       var ret;
       if (!this.opt.round) {
@@ -120,14 +143,12 @@
       if (!(opt != null) || opt) {
         this.fire('update');
       }
-      this.rbox = this._rebox(this._r.getBoundingClientRect());
+      this.rbox = this._rebox(this._measure());
       Array.from(this._r.querySelectorAll('[data-type=layout] .pdl-cell[data-name]')).map(function(node, i){
         var name, box, g;
         name = node.getAttribute('data-name');
         this$.node[name] = node;
-        this$.box[name] = box = this$._rebox(node.getBoundingClientRect());
-        box.x -= this$.rbox.x;
-        box.y -= this$.rbox.y;
+        this$.box[name] = box = this$._rebox(this$._measure(node));
         if (node.hasAttribute('data-only')) {
           return;
         }
@@ -146,16 +167,11 @@
       return this._r;
     },
     getBox: function(n, cached){
-      var rbox, box;
       cached == null && (cached = false);
       if (cached) {
         return this.box[n];
       }
-      rbox = this._rebox(this._r.getBoundingClientRect());
-      box = this._rebox(this.getNode(n).getBoundingClientRect());
-      box.x -= rbox.x;
-      box.y -= rbox.y;
-      return box;
+      return this._rebox(this._measure(this.getNode(n)));
     },
     getNode: function(it){
       return this.node[it];

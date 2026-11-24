@@ -1,5 +1,14 @@
 # Change Logs
 
+## v0.0.13
+
+ - fix bug: box measured incorrectly when an ancestor has CSS transform ( e.g., `scale(k)` ).
+   divide out root's scale factor ( `getBoundingClientRect` / `offsetWidth` ) so boxes are in root's own coordinate.
+ - `rbox` is now relative to root ( x / y always 0 ).
+ - upgrade modules
+ - add `livescript` in `devDependencies` explicitly since it's used in build script
+
+
 ## v0.0.12
 
  - update `window` only if `module` is not found
